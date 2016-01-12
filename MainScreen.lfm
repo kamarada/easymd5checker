@@ -9,6 +9,7 @@ object FmMainScreen: TFmMainScreen
   Caption = 'Easy MD5 Checker'
   ClientHeight = 263
   ClientWidth = 500
+  OnCreate = FormCreate
   Position = poDesktopCenter
   LCLVersion = '1.4.4.0'
   object EdDownloadedFile: TLabeledEdit

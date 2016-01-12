@@ -5,8 +5,8 @@ unit MainScreen;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Menus, Buttons;
+  {Classes, SysUtils, FileUtil, }Forms, {Controls, }Graphics, Dialogs, StdCtrls,
+  ExtCtrls, {Menus, }Buttons;
 
 type
 
@@ -24,6 +24,7 @@ type
     EdCheck: TLabeledEdit;
     BbClose: TBitBtn;
     DgBrowse: TOpenDialog;
+    procedure FormCreate(Sender: TObject);
     procedure BbAboutClick(Sender: TObject);
     procedure EdOriginalFileMD5Change(Sender: TObject);
     procedure BbPasteClick(Sender: TObject);
@@ -32,6 +33,7 @@ type
   private
     { private declarations }
     procedure Check();
+    procedure TranslateInterface();
   public
     { public declarations }
   end;
@@ -44,7 +46,7 @@ implementation
 {$R *.lfm}
 
 uses
-  MD5;
+  Localization, MD5;
 
 procedure TFmMainScreen.Check();
 begin
@@ -52,23 +54,42 @@ begin
   begin
     if (EdOriginalFileMD5.Text = EdDownloadedFileMD5.Text) then
     begin
-      EdCheck.Text := 'The MD5 checksums match';
+      EdCheck.Text := Locale.SumsMatch;
       EdCheck.Color := clGreen;
       EdCheck.Font.Color := clWhite;
     end
     else
     begin
-      EdCheck.Text := 'The MD5 checksums do not match';
+      EdCheck.Text := Locale.SumsDoNotMatch;
       EdCheck.Color := clRed;
       EdCheck.Font.Color := clWhite;
     end;
   end;
 end;
 
+procedure TFmMainScreen.TranslateInterface();
+begin
+  Application.Title := Locale.FmMainScreen;
+  Caption := Locale.FmMainScreen;
+  LaInfo.Caption := Locale.LaInfo;
+  BbAbout.Caption := Locale.BbAbout;
+  EdOriginalFileMD5.EditLabel.Caption := Locale.EdOriginalFileMD5;
+  BbPaste.Caption := Locale.BbPaste;
+  EdDownloadedFile.EditLabel.Caption := Locale.EdDownloadedFile;
+  BbBrowse.Caption := Locale.BbBrowse;
+  EdDownloadedFileMD5.EditLabel.Caption := Locale.EdDownloadedFileMD5;
+  EdCheck.EditLabel.Caption := Locale.EdCheck;
+  BbClose.Caption := Locale.BbClose;
+end;
+
+procedure TFmMainScreen.FormCreate(Sender: TObject);
+begin
+  TranslateInterface();
+end;
+
 procedure TFmMainScreen.BbAboutClick(Sender: TObject);
 begin
-  ShowMessage('Copyright 2015 The Linux Kamarada Project' + ^M + ^J +
-    'https://kamarada.github.io/');
+  ShowMessage(Locale.About);
 end;
 
 procedure TFmMainScreen.EdOriginalFileMD5Change(Sender: TObject);
@@ -87,8 +108,7 @@ begin
   if DgBrowse.Execute() then
   begin
     EdDownloadedFile.Text := DgBrowse.FileName;
-    EdDownloadedFileMD5.Text := 'Please wait, calculating the MD5 checksum ' +
-      'of the downloaded file...';
+    EdDownloadedFileMD5.Text := Locale.PleaseWait;
     EdDownloadedFileMD5.Text := MD5Print(MD5File(EdDownloadedFile.Text));
     Check();
   end;
